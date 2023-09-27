@@ -23,13 +23,42 @@ sealed class Destinations(
     object Pantalla3 : Destinations("pantalla3", "Pantalla 3", Icons.Filled.Favorite)
     object Pantalla4 : Destinations("pantalla4", "Pantalla 4x", Icons.Filled.Face )
 
-    object Pantalla5 : Destinations("pantalla5", "Pantalla 5x   ", Icons.Filled.AccountCircle )
+    object Pantalla5 : Destinations("pantalla5", "Pantalla 5x", Icons.Filled.AccountCircle )
+
+    object ActividadUI: Destinations("actividadUI","Adm. Actividades", Icons.Filled.DateRange)
+
+    object ActividadForm: Destinations("actividadForm?actId={actId}", "Form Actividad", Icons.Filled.Add){
+        fun passId(actId:String?):String{
+            return "actividadForm?actId=$actId"
+        }
+    }
+
+    object MaterialesxUI: Destinations("materialesxUI","Adm. Materialesxes", Icons.Filled.DateRange)
+
+    object MaterialesxForm: Destinations("MaterialesxForm?matId={matId}", "Form Materialesx", Icons.Filled.Add){
+        fun passId(matId:String?):String{
+            return "materialesxForm?matId=$matId"
+        }
+    }
+
+
+
+    object FacultadUI: Destinations("facultadUI","Adm. Facultades", Icons.Filled.DateRange)
+
+    object FacultadForm: Destinations("facultadForm?actId={actId}", "Form Facultad", Icons.Filled.Add){
+        fun passId(actId:String?):String{
+            return "facultadForm?actId=$actId"
+        }
+    }
+
 
     object EscuelaUI: Destinations("escuelaUI","Adm. Escuela", Icons.Filled.DateRange)
 
-    object EscuelaForm : Destinations("escuelaForm?actId={actId}", "Form Escuela", Icons.Filled.Add){
-        fun passId(actId:String?):String{
-            return "escuelaForm?actId=$actId"
+    object EscuelaForm: Destinations("EscuelaForm?matId={matId}", "Form Escuela", Icons.Filled.Add){
+        fun passId(matId:String?):String{
+            return "escuelaForm?matId=$matId"
         }
     }
+
+
 }

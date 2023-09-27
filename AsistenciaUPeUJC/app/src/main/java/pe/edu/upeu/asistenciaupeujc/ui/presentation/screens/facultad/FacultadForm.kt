@@ -1,5 +1,4 @@
-package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela
-
+package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.facultad
 
 import android.annotation.SuppressLint
 import android.os.Looper
@@ -34,10 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pe.edu.upeu.asistenciaupeujc.modelo.Facultad
 import pe.edu.upeu.asistenciaupeujc.modelo.ComboModel
-import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaReport
 import pe.edu.upeu.asistenciaupeujc.ui.navigation.Destinations
-import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.ProgressBarLoading
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.Spacer
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.AccionButtonCancel
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.AccionButtonSuccess
@@ -48,27 +44,27 @@ import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.DropdownMenu
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.MyFormKeys
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.NameTextField
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.TimePickerCustom
-import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaFormViewModel
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.facultad.FacultadFormViewModel
 import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 
 @Composable
-fun EscuelaForm(
+fun FacultadForm(
     text: String,
     darkMode: MutableState<Boolean>,
     navController: NavHostController,
-    viewModel: EscuelaFormViewModel = hiltViewModel()
+    viewModel: FacultadFormViewModel = hiltViewModel()
 ) {
-    val escuelaD:Escuela
+    val facultadD:Facultad
     if (text!="0"){
-        escuelaD = Gson().fromJson(text, Escuela::class.java)
+        facultadD = Gson().fromJson(text, Facultad::class.java)
     }else{
-        escuelaD= Escuela(0,"","", "","")
+        facultadD= Facultad(0,"","", "")
     }
-
-    formulario(escuelaD.id!!,
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    formulario(facultadD.id!!,
         darkMode,
         navController,
-        escuelaD,
+        facultadD,
         viewModel
     )
 
@@ -84,68 +80,50 @@ fun EscuelaForm(
 fun formulario(id:Long,
                darkMode: MutableState<Boolean>,
                navController: NavHostController,
-               escuela:Escuela,
-               viewModel: EscuelaFormViewModel
+               facultad:Facultad,
+               viewModel: FacultadFormViewModel
 ){
 
-    Log.i("VERRR", "d: "+escuela?.id!!)
-    val person=Escuela(0,"","", "","")
+    Log.i("VERRR", "d: "+facultad?.id!!)
+    val person=Facultad(0,"","", "")
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val isLoading by viewModel.isLoading.observeAsState(false)
-    val actis by viewModel.activ.observeAsState(arrayListOf())
 
-    var locationCallback: LocationCallback? = null
-    var fusedLocationClient: FusedLocationProviderClient? = null
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(
-        context)
 
 
 
     Scaffold(modifier = Modifier.padding(top = 60.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)){
         BuildEasyForms { easyForm ->
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-
+                NameTextField(easyForms = easyForm, text =facultad?.nombrefac!!,"Nomb. Facultad:", MyFormKeys.NAME )
                 var listE = listOf(
-                    ComboModel("SI","SI"),
-                    ComboModel("NO","NO"),
+                    ComboModel("Activo","Activo"),
+                    ComboModel("Desactivo","Desactivo"),
                 )
+                ComboBox(easyForm = easyForm, "Estado:", facultad?.estado!!, listE)
+                NameTextField(easyForms = easyForm, text =facultad?.iniciales!!,"Iniciales:", MyFormKeys.NAME )
+
 
 
 
                 Row(Modifier.align(Alignment.CenterHorizontally)){
                     AccionButtonSuccess(easyForms = easyForm, "Guardar", id){
                         val lista=easyForm.formData()
+                        person.nombrefac=(lista.get(0) as EasyFormsResult.StringResult).value
+                        person.estado=splitCadena((lista.get(1) as EasyFormsResult.GenericStateResult<String>).value)
+                        person.iniciales=splitCadena((lista.get(2) as EasyFormsResult.GenericStateResult<String>).value)
 
 
-                        //person.actividadId = (lista.get(7) as EasyFormsResult.StringResult).value.toLong()
-
-
-                        if (id==0.toLong()){
-
-
-                            Log.i("AGREGARID", "OF:"+ person.id_facultad)
-
-                            viewModel.addEscuela(person)
-
-                            navController.navigate(Destinations.MaterialesxUI.route)
-                        }else{
-                            person.id=id
-                            Log.i("MODIFICAR", "M:"+person)
-                            viewModel.editEscuela(person)
-                            navController.navigate(Destinations.MaterialesxUI.route)
-                        }
-
+                        navController.navigate(Destinations.FacultadUI.route)
                     }
                     Spacer()
                     AccionButtonCancel(easyForms = easyForm, "Cancelar"){
-                        navController.navigate(Destinations.EscuelaUI.route)
+                        navController.navigate(Destinations.FacultadUI.route)
                     }
                 }
             }
         }
     }
-
 }
 
 

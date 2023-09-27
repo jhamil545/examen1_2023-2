@@ -1,4 +1,4 @@
-package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela
+package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.materialesx
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -12,28 +12,28 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pe.edu.upeu.asistenciaupeujc.modelo.Actividad
 import pe.edu.upeu.asistenciaupeujc.modelo.ComboModel
-import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaReport
+import pe.edu.upeu.asistenciaupeujc.modelo.Materialesx
+import pe.edu.upeu.asistenciaupeujc.modelo.MaterialesxReport
 import pe.edu.upeu.asistenciaupeujc.repository.ActividadRepository
-import pe.edu.upeu.asistenciaupeujc.repository.EscuelaRepository
+import pe.edu.upeu.asistenciaupeujc.repository.MaterialesxRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class EscuelaFormViewModel @Inject constructor(
-    private val escuRepo: EscuelaRepository,
-    private val facuRepo: ActividadRepository,
+class MaterialesxFormViewModel @Inject constructor(
+    private val materRepo: MaterialesxRepository,
+    private val activRepo: ActividadRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(){
     private val _isLoading: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
 
-    fun getEscuela(idX: Long): LiveData<Escuela> {
-        return escuRepo.buscarEscuelaId(idX)
+    fun getMaterialesx(idX: Long): LiveData<Materialesx> {
+        return materRepo.buscarMaterialesxId(idX)
     }
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    val activ: LiveData<List<Actividad>> by lazy { facuRepo.reportarActividades()}
+    val activ: LiveData<List<Actividad>> by lazy { activRepo.reportarActividades()}
     var listE = mutableListOf<ComboModel>(ComboModel(0.toString(), "Seleccione"))
 
     init {
@@ -48,19 +48,19 @@ class EscuelaFormViewModel @Inject constructor(
         }
     }
 
-    fun addEscuela(escuela: Escuela){
+    fun addMaterialesx(materialesx: Materialesx){
         viewModelScope.launch (Dispatchers.IO){
             try {
-                escuRepo.insertarEscuela(escuela)
+                materRepo.insertarMaterialesx(materialesx)
             }catch (e:Exception){
                 Log.i("ERRRRR", "${e.message}")
             }
         }
     }
-    fun editEscuela(escuela: Escuela){
+    fun editMaterialesx(materialesx: Materialesx){
         viewModelScope.launch(Dispatchers.IO){
             try {
-                escuRepo.modificarRemoteEscuela(escuela)
+                materRepo.modificarRemoteMaterialesx(materialesx)
             }catch (e:Exception){
                 Log.i("ERRRRREDI", "${e.message}")
             }

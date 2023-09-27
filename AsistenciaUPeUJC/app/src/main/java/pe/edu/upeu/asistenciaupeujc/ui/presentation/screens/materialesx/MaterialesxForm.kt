@@ -1,5 +1,4 @@
-package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela
-
+package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.materialesx
 
 import android.annotation.SuppressLint
 import android.os.Looper
@@ -32,10 +31,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import pe.edu.upeu.asistenciaupeujc.modelo.Facultad
+import pe.edu.upeu.asistenciaupeujc.modelo.Actividad
 import pe.edu.upeu.asistenciaupeujc.modelo.ComboModel
-import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaReport
+import pe.edu.upeu.asistenciaupeujc.modelo.Materialesx
+import pe.edu.upeu.asistenciaupeujc.modelo.MaterialesxReport
 import pe.edu.upeu.asistenciaupeujc.ui.navigation.Destinations
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.ProgressBarLoading
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.Spacer
@@ -48,27 +47,26 @@ import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.DropdownMenu
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.MyFormKeys
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.NameTextField
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.form.TimePickerCustom
-import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaFormViewModel
 import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 
 @Composable
-fun EscuelaForm(
+fun MaterialesxForm(
     text: String,
     darkMode: MutableState<Boolean>,
     navController: NavHostController,
-    viewModel: EscuelaFormViewModel = hiltViewModel()
+    viewModel: MaterialesxFormViewModel= hiltViewModel()
 ) {
-    val escuelaD:Escuela
+    val materialesxD:Materialesx
     if (text!="0"){
-        escuelaD = Gson().fromJson(text, Escuela::class.java)
+        materialesxD = Gson().fromJson(text, Materialesx::class.java)
     }else{
-        escuelaD= Escuela(0,"","", "","")
+        materialesxD= Materialesx(0,"","", "","","","","","","",0)
     }
 
-    formulario(escuelaD.id!!,
+    formulario(materialesxD.id!!,
         darkMode,
         navController,
-        escuelaD,
+        materialesxD,
         viewModel
     )
 
@@ -84,12 +82,11 @@ fun EscuelaForm(
 fun formulario(id:Long,
                darkMode: MutableState<Boolean>,
                navController: NavHostController,
-               escuela:Escuela,
-               viewModel: EscuelaFormViewModel
-){
+               materialesx:Materialesx,
+               viewModel: MaterialesxFormViewModel){
 
-    Log.i("VERRR", "d: "+escuela?.id!!)
-    val person=Escuela(0,"","", "","")
+    Log.i("VERRR", "d: "+materialesx?.id!!)
+    val person=Materialesx(0,"","", "","","","","","","",0)
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -99,8 +96,31 @@ fun formulario(id:Long,
     var fusedLocationClient: FusedLocationProviderClient? = null
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(
         context)
+    locationCallback = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            for (lo in p0.locations) {
+                Log.e("LATLONX", "Lat: ${lo.latitude} Lon: ${lo.longitude}")
+                person.latituda=lo.latitude.toString()
+                person.longituda=lo.longitude.toString()
+            }
+        }
+    }
+    scope.launch{
+        val locationRequest = LocationRequest.create().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        fusedLocationClient!!.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
 
+        Log.e("LATLON", "Lat: ${person.latituda} Lon: ${person.longituda}")
+        delay(1500L)
+        if (fusedLocationClient != null) {
+            fusedLocationClient!!.removeLocationUpdates(locationCallback);
+            fusedLocationClient = null;
+        }
 
+    }
 
     Scaffold(modifier = Modifier.padding(top = 60.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)){
         BuildEasyForms { easyForm ->
@@ -111,35 +131,51 @@ fun formulario(id:Long,
                     ComboModel("NO","NO"),
                 )
 
+                ComboBox(easyForm = easyForm, "offlinex:", materialesx?.offlinex!!, listE)
+                NameTextField(easyForms = easyForm, text =materialesx?.cui!!,"Nomb. Cui:", MyFormKeys.CUI )
+                NameTextField(easyForms = easyForm, text =materialesx?.tipoCui!!,"Nomb. tipoCui:", MyFormKeys.TIPOCUI )
+                NameTextField(easyForms = easyForm, text =materialesx?.materEntre!!,"mater_entre:", MyFormKeys.MATERENTRE )
+                DatePickerCustom(easyForm = easyForm, label = "Fecha", texts = materialesx?.fecha!!, MyFormKeys.FECHA,"yyyy-MM-dd")
+
+                TimePickerCustom(easyForm = easyForm, label = "hora_reg", texts = materialesx?.horaReg!!, MyFormKeys.HORAREG, "HH:mm:ss")
+                DatePickerCustom(easyForm = easyForm, label = "modFh", texts = materialesx?.modFh!!, MyFormKeys.MODFH,"yyyy-MM-dd")
+
+                DropdownMenuCustom(easyForm = easyForm, label = "Actividad:", textv ="", viewModel.listE, MyFormKeys.ACTIVIDADID )
 
 
                 Row(Modifier.align(Alignment.CenterHorizontally)){
                     AccionButtonSuccess(easyForms = easyForm, "Guardar", id){
                         val lista=easyForm.formData()
-
-
+                        person.offlinex=splitCadena((lista.get(0) as EasyFormsResult.GenericStateResult<String>).value)
+                        person.cui=(lista.get(1) as EasyFormsResult.StringResult).value
+                        person.tipoCui=(lista.get(2) as EasyFormsResult.StringResult).value
+                        person.materEntre=(lista.get(3) as EasyFormsResult.StringResult).value
+                        person.fecha=(lista.get(4) as EasyFormsResult.GenericStateResult<String>).value
+                        person.horaReg=(lista.get(5) as EasyFormsResult.GenericStateResult<String>).value
+                        person.modFh=(lista.get(6) as EasyFormsResult.GenericStateResult<String>).value
+                        person.actividadId=splitCadena((lista.get(7) as EasyFormsResult.GenericStateResult<String>).value).toLong()
                         //person.actividadId = (lista.get(7) as EasyFormsResult.StringResult).value.toLong()
 
 
                         if (id==0.toLong()){
 
+                            Log.i("AGREGAR", "OF:"+ person.offlinex)
+                            Log.i("AGREGARID", "OF:"+ person.actividadId)
 
-                            Log.i("AGREGARID", "OF:"+ person.id_facultad)
-
-                            viewModel.addEscuela(person)
+                            viewModel.addMaterialesx(person)
 
                             navController.navigate(Destinations.MaterialesxUI.route)
                         }else{
                             person.id=id
                             Log.i("MODIFICAR", "M:"+person)
-                            viewModel.editEscuela(person)
+                            viewModel.editMaterialesx(person)
                             navController.navigate(Destinations.MaterialesxUI.route)
                         }
 
                     }
                     Spacer()
                     AccionButtonCancel(easyForms = easyForm, "Cancelar"){
-                        navController.navigate(Destinations.EscuelaUI.route)
+                        navController.navigate(Destinations.MaterialesxUI.route)
                     }
                 }
             }

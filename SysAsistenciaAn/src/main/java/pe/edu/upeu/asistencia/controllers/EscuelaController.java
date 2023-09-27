@@ -66,4 +66,4 @@ public class EscuelaController {
         Escuela updatedActividad = escuelaService.update(actividadDetails, id);
         return ResponseEntity.ok(updatedActividad);
     }   
-    }    
+    } 

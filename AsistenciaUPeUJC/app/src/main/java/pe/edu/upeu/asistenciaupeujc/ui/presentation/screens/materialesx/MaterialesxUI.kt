@@ -1,5 +1,4 @@
-package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela
-
+package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.materialesx
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -59,17 +58,16 @@ import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import pe.edu.upeu.asistenciaupeujc.R
-import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
+import pe.edu.upeu.asistenciaupeujc.modelo.Materialesx
+import pe.edu.upeu.asistenciaupeujc.modelo.MaterialesxConActividad
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.BottomNavigationBar
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.FabItem
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.LoadingCard
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.MultiFloatingActionButton
-import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaViewModel
 
 @Composable
-fun EscuelaUI (navegarEditarAct: (String) -> Unit, viewModel:
-EscuelaViewModel = hiltViewModel(), navController: NavHostController
+fun MaterialesxUI (navegarEditarAct: (String) -> Unit, viewModel:
+MaterialesxViewModel= hiltViewModel(), navController: NavHostController
 ){
     val actis by viewModel.activ.observeAsState(arrayListOf())
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -79,7 +77,7 @@ EscuelaViewModel = hiltViewModel(), navController: NavHostController
         //viewModel.addUser()
         navegarEditarAct((0).toString())
     }, onDeleteClick = {
-        viewModel.deleteEscuela(it)
+        viewModel.deleteMaterialesx(it)
     }, actis, isLoading,
         onEditClick = {
             val jsonString = Gson().toJson(it)
@@ -96,15 +94,15 @@ val formatoFecha: DateTimeFormatter? = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 @Composable
 fun MyApp(navController: NavHostController,
           onAddClick: (() -> Unit)? = null,
-          onDeleteClick: ((toDelete: EscuelaConActividad) -> Unit)? = null,
-          escuelas: List<EscuelaConActividad>,
+          onDeleteClick: ((toDelete: MaterialesxConActividad) -> Unit)? = null,
+          materialesxes: List<MaterialesxConActividad>,
           isLoading: Boolean,
-          onEditClick: ((toPersona: EscuelaConActividad) -> Unit)? = null,
+          onEditClick: ((toPersona: MaterialesxConActividad) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     //val navController = rememberNavController()
     val navigationItems2 = listOf(
-        Destinations.EscuelaUI,
+        Destinations.MaterialesxUI,
         Destinations.Pantalla1,
         Destinations.Pantalla2,
         Destinations.Pantalla3
@@ -153,7 +151,7 @@ fun MyApp(navController: NavHostController,
                 //.offset(x = (16).dp, y = (-32).dp),
                 userScrollEnabled= true,
             ){
-                var itemCount = escuelas.size
+                var itemCount = materialesxes.size
                 if (isLoading) itemCount++
                 items(count = itemCount) { index ->
                     var auxIndex = index;
@@ -162,7 +160,7 @@ fun MyApp(navController: NavHostController,
                             return@items LoadingCard()
                         auxIndex--
                     }
-                    val escuela = escuelas[auxIndex]
+                    val materialesx = materialesxes[auxIndex]
                     Card(
                         shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(
@@ -179,7 +177,7 @@ fun MyApp(navController: NavHostController,
                                     //.clip(CircleShape)
                                     .clip(RoundedCornerShape(8.dp)),
                                 painter = rememberImagePainter(
-                                    data = escuela.tipoCui,
+                                    data = materialesx.tipoCui,
                                     builder = {
                                         placeholder(R.drawable.bg)
                                         error(R.drawable.bg)
@@ -192,8 +190,8 @@ fun MyApp(navController: NavHostController,
                             Column(
                                 Modifier.weight(1f),
                             ) {
-                                Text(" ${escuela.offlinex}", fontWeight = FontWeight.Bold)
-                                val datex = LocalDate.parse(escuela.fecha!!, DateTimeFormatter.ISO_DATE)
+                                Text(" ${materialesx.offlinex}", fontWeight = FontWeight.Bold)
+                                val datex = LocalDate.parse(materialesx.fecha!!, DateTimeFormatter.ISO_DATE)
                                 var fecha=formatoFecha?.format(datex)
                                 Text(""+fecha, color =
                                 MaterialTheme.colorScheme.primary)
@@ -210,7 +208,7 @@ fun MyApp(navController: NavHostController,
                                 ConfirmDialog(
                                     message = "Esta seguro de eliminar?",
                                     onConfirm = {
-                                        onDeleteClick?.invoke(escuela)
+                                        onDeleteClick?.invoke(materialesx)
                                         showDialog.value=false
                                     },
                                     onDimins = {
@@ -222,7 +220,7 @@ fun MyApp(navController: NavHostController,
                             IconButton(onClick = {
                                 Log.i("VERTOKEN", "Holas")
                                 Log.i("VERTOKEN", TokenUtils.TOKEN_CONTENT)
-                                onEditClick?.invoke(escuela)
+                                onEditClick?.invoke(materialesx)
                             }) {
                                 Icon(
                                     Icons.Filled.Edit,

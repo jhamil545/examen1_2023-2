@@ -1,5 +1,4 @@
-package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela
-
+package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.actividad
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -59,17 +58,14 @@ import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import pe.edu.upeu.asistenciaupeujc.R
-import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.BottomNavigationBar
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.FabItem
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.LoadingCard
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.MultiFloatingActionButton
-import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaViewModel
 
 @Composable
-fun EscuelaUI (navegarEditarAct: (String) -> Unit, viewModel:
-EscuelaViewModel = hiltViewModel(), navController: NavHostController
+fun ActividadUI (navegarEditarAct: (String) -> Unit, viewModel:
+ActividadViewModel= hiltViewModel(), navController: NavHostController
 ){
     val actis by viewModel.activ.observeAsState(arrayListOf())
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -79,7 +75,7 @@ EscuelaViewModel = hiltViewModel(), navController: NavHostController
         //viewModel.addUser()
         navegarEditarAct((0).toString())
     }, onDeleteClick = {
-        viewModel.deleteEscuela(it)
+        viewModel.deleteActividad(it)
     }, actis, isLoading,
         onEditClick = {
             val jsonString = Gson().toJson(it)
@@ -94,25 +90,25 @@ val formatoFecha: DateTimeFormatter? = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MyApp(navController: NavHostController,
-          onAddClick: (() -> Unit)? = null,
-          onDeleteClick: ((toDelete: EscuelaConActividad) -> Unit)? = null,
-          escuelas: List<EscuelaConActividad>,
-          isLoading: Boolean,
-          onEditClick: ((toPersona: EscuelaConActividad) -> Unit)? = null,
+fun MyApp( navController: NavHostController,
+    onAddClick: (() -> Unit)? = null,
+    onDeleteClick: ((toDelete: Actividad) -> Unit)? = null,
+    actividades: List<Actividad>,
+    isLoading: Boolean,
+    onEditClick: ((toPersona: Actividad) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     //val navController = rememberNavController()
     val navigationItems2 = listOf(
-        Destinations.EscuelaUI,
+        Destinations.ActividadUI,
         Destinations.Pantalla1,
         Destinations.Pantalla2,
         Destinations.Pantalla3
     )
-    /*  val scaffoldState = rememberScaffoldState(
-          drawerState = rememberDrawerState(initialValue =
-          DrawerValue.Closed)
-      )*/
+  /*  val scaffoldState = rememberScaffoldState(
+        drawerState = rememberDrawerState(initialValue =
+        DrawerValue.Closed)
+    )*/
 
     val fabItems = listOf(
         FabItem(
@@ -125,14 +121,14 @@ fun MyApp(navController: NavHostController,
         },
         FabItem(
             Icons.Filled.Favorite,
-            "Add MATERIAL"
+            "Add Actvidad"
         ) { onAddClick?.invoke() }
     )
 
     Scaffold(
         bottomBar = {
             BottomAppBar {
-                BottomNavigationBar(navigationItems2, navController = navController)
+            BottomNavigationBar(navigationItems2, navController = navController)
             }
         },
         modifier = Modifier,
@@ -144,7 +140,7 @@ fun MyApp(navController: NavHostController,
                 showLabels = true
             )
         },
-        floatingActionButtonPosition = FabPosition.End,
+    floatingActionButtonPosition = FabPosition.End,
     ) {
         Box(modifier = Modifier.fillMaxSize()){
             LazyColumn(modifier = Modifier
@@ -153,7 +149,7 @@ fun MyApp(navController: NavHostController,
                 //.offset(x = (16).dp, y = (-32).dp),
                 userScrollEnabled= true,
             ){
-                var itemCount = escuelas.size
+                var itemCount = actividades.size
                 if (isLoading) itemCount++
                 items(count = itemCount) { index ->
                     var auxIndex = index;
@@ -162,7 +158,7 @@ fun MyApp(navController: NavHostController,
                             return@items LoadingCard()
                         auxIndex--
                     }
-                    val escuela = escuelas[auxIndex]
+                    val actividad = actividades[auxIndex]
                     Card(
                         shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(
@@ -179,7 +175,7 @@ fun MyApp(navController: NavHostController,
                                     //.clip(CircleShape)
                                     .clip(RoundedCornerShape(8.dp)),
                                 painter = rememberImagePainter(
-                                    data = escuela.tipoCui,
+                                    data = actividad.evaluar,
                                     builder = {
                                         placeholder(R.drawable.bg)
                                         error(R.drawable.bg)
@@ -192,14 +188,14 @@ fun MyApp(navController: NavHostController,
                             Column(
                                 Modifier.weight(1f),
                             ) {
-                                Text(" ${escuela.offlinex}", fontWeight = FontWeight.Bold)
-                                val datex = LocalDate.parse(escuela.fecha!!, DateTimeFormatter.ISO_DATE)
+                                Text("${actividad.nombreActividad} - ${actividad.estado}", fontWeight = FontWeight.Bold)
+                                val datex = LocalDate.parse(actividad.fecha!!, DateTimeFormatter.ISO_DATE)
                                 var fecha=formatoFecha?.format(datex)
                                 Text(""+fecha, color =
                                 MaterialTheme.colorScheme.primary)
                             }
 
-                            Spacer()
+                           Spacer()
                             val showDialog = remember { mutableStateOf(false) }
                             IconButton(onClick = {
                                 showDialog.value = true
@@ -210,7 +206,7 @@ fun MyApp(navController: NavHostController,
                                 ConfirmDialog(
                                     message = "Esta seguro de eliminar?",
                                     onConfirm = {
-                                        onDeleteClick?.invoke(escuela)
+                                        onDeleteClick?.invoke(actividad)
                                         showDialog.value=false
                                     },
                                     onDimins = {
@@ -222,7 +218,7 @@ fun MyApp(navController: NavHostController,
                             IconButton(onClick = {
                                 Log.i("VERTOKEN", "Holas")
                                 Log.i("VERTOKEN", TokenUtils.TOKEN_CONTENT)
-                                onEditClick?.invoke(escuela)
+                                onEditClick?.invoke(actividad)
                             }) {
                                 Icon(
                                     Icons.Filled.Edit,

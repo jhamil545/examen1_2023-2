@@ -4,8 +4,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import pe.edu.upeu.asistenciaupeujc.repository.EscuelaRepository
-import pe.edu.upeu.asistenciaupeujc.repository.EscuelaRepositoryImp
+import pe.edu.upeu.asistenciaupeujc.repository.ActividadRepository
+import pe.edu.upeu.asistenciaupeujc.repository.ActividadRepositoryImp
+import pe.edu.upeu.asistenciaupeujc.repository.MaterialesxRepository
+import pe.edu.upeu.asistenciaupeujc.repository.MaterialesxRepositoryImp
 import pe.edu.upeu.asistenciaupeujc.repository.UsuarioRepository
 import pe.edu.upeu.asistenciaupeujc.repository.UsuarioRepositoryImp
 import javax.inject.Singleton
@@ -17,8 +19,13 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun userRepository(userRepos:UsuarioRepositoryImp):UsuarioRepository
+
     @Binds
     @Singleton
-    abstract fun escuelaRepository(actRepos:EscuelaRepositoryImp):EscuelaRepository
+    abstract fun actividadRepository(actRepos:ActividadRepositoryImp):ActividadRepository
+
+    @Binds
+    @Singleton
+    abstract fun materialesxRepository(actRepos: MaterialesxRepositoryImp): MaterialesxRepository
 
 }

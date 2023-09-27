@@ -9,8 +9,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import pe.edu.upeu.asistenciaupeujc.data.local.DbDataSource
-import pe.edu.upeu.asistenciaupeujc.data.local.dao.EscuelaDao
-import pe.edu.upeu.asistenciaupeujc.data.remote.RestEscuela
+import pe.edu.upeu.asistenciaupeujc.data.local.dao.ActividadDao
+import pe.edu.upeu.asistenciaupeujc.data.local.dao.MaterialesxDao
+import pe.edu.upeu.asistenciaupeujc.data.remote.RestActividad
+import pe.edu.upeu.asistenciaupeujc.data.remote.RestMaterialesx
 import pe.edu.upeu.asistenciaupeujc.data.remote.RestUsuario
 import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 import retrofit2.Retrofit
@@ -54,20 +56,30 @@ class DataSourceModule {
 
     @Singleton
     @Provides
-    fun resEscuela(retrofit: Retrofit):RestEscuela{
-        return retrofit.create(RestEscuela::class.java)
+    fun restActividad(retrofit: Retrofit):RestActividad{
+        return retrofit.create(RestActividad::class.java)
+    }
+    @Singleton
+    @Provides
+    fun restMaterialesx(retrofit: Retrofit): RestMaterialesx {
+        return retrofit.create(RestMaterialesx::class.java)
     }
 
     @Singleton
     @Provides
-    fun dbDataSource(@ApplicationContext context: Context):DbDataSource{
-        return Room.databaseBuilder(context, DbDataSource::class.java,"eventoescuela_bd")
+    fun dbDataSource(@ApplicationContext context:Context):DbDataSource{
+        return Room.databaseBuilder(context, DbDataSource::class.java, "eventoasistencia_db")
             .fallbackToDestructiveMigration().build()
     }
 
     @Singleton
     @Provides
-    fun escuelaDao(db:DbDataSource):EscuelaDao{
-        return db.escuelaDao()
+    fun actividadDao(db:DbDataSource):ActividadDao{
+        return db.actividadDao()
+    }
+    @Singleton
+    @Provides
+    fun materialesxDao(db:DbDataSource): MaterialesxDao {
+        return db.materialesxDao()
     }
 }

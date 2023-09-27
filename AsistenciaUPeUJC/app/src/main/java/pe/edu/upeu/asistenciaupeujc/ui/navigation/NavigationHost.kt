@@ -13,9 +13,15 @@ import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.Pantalla2
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.Pantalla3
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.Pantalla4
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.Pantalla5
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.actividad.ActividadForm
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.actividad.ActividadUI
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaForm
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaUI
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.facultad.FacultadForm
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.facultad.FacultadUI
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.login.LoginScreen
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.materialesx.MaterialesxForm
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.materialesx.MaterialesxUI
 
 @Composable
 fun NavigationHost(
@@ -51,15 +57,54 @@ fun NavigationHost(
         composable(Destinations.Pantalla4.route) { Pantalla4() }
 
         composable(Destinations.Pantalla5.route) { Pantalla5() }
-        composable(Destinations.EscuelaUI.route) {
-            EscuelaUI(navegarEditarAct = {newText->navController.navigate(Destinations.EscuelaForm.passId(newText))},
-            navController = navController
-        )}
-        composable(Destinations.EscuelaForm.route, arguments = listOf(navArgument("actId"){
+
+        composable(Destinations.ActividadUI.route){
+            ActividadUI(navegarEditarAct = {newText->navController.navigate(Destinations.ActividadForm.passId(newText))}, navController =navController )
+        }
+
+        composable(Destinations.ActividadForm.route, arguments = listOf(navArgument("actId"){
+            defaultValue="actId"
+        })){
+            navBackStackEntry -> var actId=navBackStackEntry.arguments?.getString("actId")
+            requireNotNull(actId)
+            ActividadForm(text = actId, darkMode = darkMode, navController =navController )
+        }
+
+        composable(Destinations.MaterialesxUI.route){
+            MaterialesxUI(navegarEditarAct = {newText->navController.navigate(Destinations.MaterialesxForm.passId(newText))}, navController =navController )
+        }
+
+        composable(Destinations.MaterialesxForm.route, arguments = listOf(navArgument("matId"){
+            defaultValue="matId"
+        })){
+                navBackStackEntry -> var matId=navBackStackEntry.arguments?.getString("matId")
+            requireNotNull(matId)
+            MaterialesxForm(text = matId, darkMode = darkMode, navController =navController )
+        }
+
+        composable(Destinations.FacultadUI.route){
+            FacultadUI(navegarEditarAct = {newText->navController.navigate(Destinations.FacultadForm.passId(newText))}, navController =navController )
+        }
+
+        composable(Destinations.FacultadForm.route, arguments = listOf(navArgument("actId"){
             defaultValue="actId"
         })){
                 navBackStackEntry -> var actId=navBackStackEntry.arguments?.getString("actId")
             requireNotNull(actId)
-            EscuelaForm(text = actId, darkMode = darkMode, navController =navController )
+            FacultadForm(text = actId, darkMode = darkMode, navController =navController )
+        }
+
+        composable(Destinations.EscuelaUI.route){
+            EscuelaUI(navegarEditarAct = {newText->navController.navigate(Destinations.EscuelaForm.passId(newText))}, navController =navController )
+        }
+
+        composable(Destinations.EscuelaForm.route, arguments = listOf(navArgument("matId"){
+            defaultValue="matId"
+        })){
+                navBackStackEntry -> var matId=navBackStackEntry.arguments?.getString("matId")
+            requireNotNull(matId)
+            EscuelaForm(text = matId, darkMode = darkMode, navController =navController )
+        }
+
     }
-        }}
+}

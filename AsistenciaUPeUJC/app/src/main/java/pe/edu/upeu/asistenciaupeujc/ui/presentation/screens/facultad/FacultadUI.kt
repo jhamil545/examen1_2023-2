@@ -1,5 +1,4 @@
-package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela
-
+package pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.facultad
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -51,7 +50,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.google.gson.Gson
-import pe.edu.upeu.asistenciaupeujc.modelo.Actividad
+import pe.edu.upeu.asistenciaupeujc.modelo.Facultad
 import pe.edu.upeu.asistenciaupeujc.ui.navigation.Destinations
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.ConfirmDialog
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.Spacer
@@ -59,28 +58,26 @@ import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import pe.edu.upeu.asistenciaupeujc.R
-import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.BottomNavigationBar
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.FabItem
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.LoadingCard
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.MultiFloatingActionButton
-import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.EscuelaViewModel
+import pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.facultad.FacultadViewModel
 
 @Composable
-fun EscuelaUI (navegarEditarAct: (String) -> Unit, viewModel:
-EscuelaViewModel = hiltViewModel(), navController: NavHostController
+fun FacultadUI (navegarEditarAct: (String) -> Unit, viewModel:
+FacultadViewModel = hiltViewModel(), navController: NavHostController
 ){
-    val actis by viewModel.activ.observeAsState(arrayListOf())
+    val facus by viewModel.facu.observeAsState(arrayListOf())
     val isLoading by viewModel.isLoading.observeAsState(false)
-    Log.i("VERX", ""+actis!!.size )
+    Log.i("VERX", ""+facus!!.size )
 
     MyApp(navController, onAddClick = {
         //viewModel.addUser()
         navegarEditarAct((0).toString())
     }, onDeleteClick = {
-        viewModel.deleteEscuela(it)
-    }, actis, isLoading,
+        viewModel.deleteFacultad(it)
+    }, facus, isLoading,
         onEditClick = {
             val jsonString = Gson().toJson(it)
             navegarEditarAct(jsonString)
@@ -94,17 +91,17 @@ val formatoFecha: DateTimeFormatter? = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MyApp(navController: NavHostController,
-          onAddClick: (() -> Unit)? = null,
-          onDeleteClick: ((toDelete: EscuelaConActividad) -> Unit)? = null,
-          escuelas: List<EscuelaConActividad>,
-          isLoading: Boolean,
-          onEditClick: ((toPersona: EscuelaConActividad) -> Unit)? = null,
+fun MyApp( navController: NavHostController,
+           onAddClick: (() -> Unit)? = null,
+           onDeleteClick: ((toDelete: Facultad) -> Unit)? = null,
+           facultades: List<Facultad>,
+           isLoading: Boolean,
+           onEditClick: ((toPersona: Facultad) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     //val navController = rememberNavController()
     val navigationItems2 = listOf(
-        Destinations.EscuelaUI,
+        Destinations.FacultadUI,
         Destinations.Pantalla1,
         Destinations.Pantalla2,
         Destinations.Pantalla3
@@ -125,7 +122,7 @@ fun MyApp(navController: NavHostController,
         },
         FabItem(
             Icons.Filled.Favorite,
-            "Add MATERIAL"
+            "Add Actvidad"
         ) { onAddClick?.invoke() }
     )
 
@@ -153,7 +150,7 @@ fun MyApp(navController: NavHostController,
                 //.offset(x = (16).dp, y = (-32).dp),
                 userScrollEnabled= true,
             ){
-                var itemCount = escuelas.size
+                var itemCount = facultades.size
                 if (isLoading) itemCount++
                 items(count = itemCount) { index ->
                     var auxIndex = index;
@@ -162,7 +159,7 @@ fun MyApp(navController: NavHostController,
                             return@items LoadingCard()
                         auxIndex--
                     }
-                    val escuela = escuelas[auxIndex]
+                    val facultad = facultades[auxIndex]
                     Card(
                         shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(
@@ -173,30 +170,13 @@ fun MyApp(navController: NavHostController,
                             .fillMaxWidth(),
                     ) {
                         Row(modifier = Modifier.padding(8.dp)) {
-                            Image(
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    //.clip(CircleShape)
-                                    .clip(RoundedCornerShape(8.dp)),
-                                painter = rememberImagePainter(
-                                    data = escuela.tipoCui,
-                                    builder = {
-                                        placeholder(R.drawable.bg)
-                                        error(R.drawable.bg)
-                                    }
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.FillHeight
-                            )
+
                             Spacer()
                             Column(
                                 Modifier.weight(1f),
                             ) {
-                                Text(" ${escuela.offlinex}", fontWeight = FontWeight.Bold)
-                                val datex = LocalDate.parse(escuela.fecha!!, DateTimeFormatter.ISO_DATE)
-                                var fecha=formatoFecha?.format(datex)
-                                Text(""+fecha, color =
-                                MaterialTheme.colorScheme.primary)
+                                Text("${facultad.nombrefac} - ${facultad.estado}-${facultad.iniciales}", fontWeight = FontWeight.Bold)
+
                             }
 
                             Spacer()
@@ -210,7 +190,7 @@ fun MyApp(navController: NavHostController,
                                 ConfirmDialog(
                                     message = "Esta seguro de eliminar?",
                                     onConfirm = {
-                                        onDeleteClick?.invoke(escuela)
+                                        onDeleteClick?.invoke(facultad)
                                         showDialog.value=false
                                     },
                                     onDimins = {
@@ -222,7 +202,7 @@ fun MyApp(navController: NavHostController,
                             IconButton(onClick = {
                                 Log.i("VERTOKEN", "Holas")
                                 Log.i("VERTOKEN", TokenUtils.TOKEN_CONTENT)
-                                onEditClick?.invoke(escuela)
+                                onEditClick?.invoke(facultad)
                             }) {
                                 Icon(
                                     Icons.Filled.Edit,
