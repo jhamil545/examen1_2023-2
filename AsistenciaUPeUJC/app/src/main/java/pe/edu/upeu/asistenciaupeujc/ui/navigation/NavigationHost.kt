@@ -86,10 +86,10 @@ fun NavigationHost(
             FacultadUI(navegarEditarAct = {newText->navController.navigate(Destinations.FacultadForm.passId(newText))}, navController =navController )
         }
 
-        composable(Destinations.FacultadForm.route, arguments = listOf(navArgument("actId"){
+        composable(Destinations.FacultadForm.route, arguments = listOf(navArgument("fatId"){
             defaultValue="actId"
         })){
-                navBackStackEntry -> var actId=navBackStackEntry.arguments?.getString("actId")
+                navBackStackEntry -> var actId=navBackStackEntry.arguments?.getString("fatId")
             requireNotNull(actId)
             FacultadForm(text = actId, darkMode = darkMode, navController =navController )
         }
@@ -98,10 +98,10 @@ fun NavigationHost(
             EscuelaUI(navegarEditarAct = {newText->navController.navigate(Destinations.EscuelaForm.passId(newText))}, navController =navController )
         }
 
-        composable(Destinations.EscuelaForm.route, arguments = listOf(navArgument("matId"){
+        composable(Destinations.EscuelaForm.route, arguments = listOf(navArgument("esId"){
             defaultValue="matId"
         })){
-                navBackStackEntry -> var matId=navBackStackEntry.arguments?.getString("matId")
+                navBackStackEntry -> var matId=navBackStackEntry.arguments?.getString("esId")
             requireNotNull(matId)
             EscuelaForm(text = matId, darkMode = darkMode, navController =navController )
         }

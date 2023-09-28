@@ -49,7 +49,7 @@ public class FacultadServiceImp implements FacultadService {
     }
 
     @Override
-    public Facultad geEntidadById(Long id) {
+    public Facultad geFacultadById(Long id) {
         Facultad findEntidad = entidadRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Facultad not exist with id :" + id));
         return findEntidad;
     }

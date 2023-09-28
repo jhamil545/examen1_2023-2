@@ -9,39 +9,69 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import pe.edu.upeu.asistencia.dtos.EscuelaDto;
+import pe.edu.upeu.asistencia.dtos.MaterialesxDto;
+import pe.edu.upeu.asistencia.exceptions.AppException;
+
 import pe.edu.upeu.asistencia.exceptions.ResourceNotFoundException;
+import pe.edu.upeu.asistencia.mappers.EscuelaMapper;
+import pe.edu.upeu.asistencia.mappers.MaterialesxMapper;
 import pe.edu.upeu.asistencia.models.Escuela;
+
 import pe.edu.upeu.asistencia.repositories.EscuelaRepository;
+import pe.edu.upeu.asistencia.repositories.MaterialesxRepository;
 
 /**
  *
  * @author DELL
  */
+
 @RequiredArgsConstructor
 @Service
 @Transactional
 public class EscuelaServiceImp implements EscuelaService {
 
     @Autowired
-    private EscuelaRepository entidadRepo;
+    private EscuelaRepository escuelaRepo;
+
+    @Autowired
+    private FacultadService facultadService;
+
+    private final EscuelaMapper escuelaMapper;
 
     @Override
-    public Escuela save(Escuela entidad) {
-        return entidadRepo.save(entidad);
+    public Escuela save(EscuelaDto.EscuelaCrearDto escuela) {
+
+        Escuela matEnt=escuelaMapper.escuelaCrearDtoToEscuela(escuela);
+        matEnt.setFacultadId(facultadService.geFacultadById(escuela.facultadId()));
+        System.out.println(escuela.nombreeap());
+        System.out.println(escuela.estado());
+        try {
+            return escuelaRepo.save(matEnt);
+        } catch (Exception e) {
+            throw new AppException("Error-" + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
     public List<Escuela> findAll() {
-        return entidadRepo.findAll();
+        try {
+            return escuelaRepo.findAll();
+        } catch (Exception e) {
+            throw new AppException("Error-" + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
     public Map<String, Boolean> delete(Long id) {
-        Escuela entidadx = entidadRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Escuela not exist with id :" + id));
-        entidadRepo.delete(entidadx);
+        Escuela escuelax = escuelaRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("escu not exist with id :" + id));
+
+        escuelaRepo.delete(escuelax);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", true);
 
@@ -49,19 +79,21 @@ public class EscuelaServiceImp implements EscuelaService {
     }
 
     @Override
-    public Escuela geEntidadById(Long id) {
-        Escuela findEntidad = entidadRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Escuela not exist with id :" + id));
-        return findEntidad;
+    public Escuela getEscuelaById(Long id) {
+        Escuela findEscuela = escuelaRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("escuela not exist with id :" + id));
+        return findEscuela;
     }
 
     @Override
-    public Escuela update(Escuela entidad, Long id) {
-        Escuela entidadx = entidadRepo.findById(id)
+    public Escuela update(EscuelaDto.EscuelaCrearDto escuela, Long id) {
+        Escuela escuelax = escuelaRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Periodo not exist with id :" + id));
-        entidadx.setNombreeap(entidad.getNombreeap());
-        entidadx.setEstado(entidad.getEstado());
-        entidadx.setInicialeseap(entidad.getInicialeseap());
-        return entidadRepo.save(entidadx);
+          
+        escuelax.setNombreeap(escuela.nombreeap());
+        escuelax.setEstado(escuela.estado());
+        escuelax.setInicialeseap(escuela.inicialeseap());
+        return escuelaRepo.save(escuelax);
     }
 
 }

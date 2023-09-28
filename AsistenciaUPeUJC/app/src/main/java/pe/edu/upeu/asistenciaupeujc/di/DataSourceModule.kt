@@ -10,8 +10,12 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import pe.edu.upeu.asistenciaupeujc.data.local.DbDataSource
 import pe.edu.upeu.asistenciaupeujc.data.local.dao.ActividadDao
+import pe.edu.upeu.asistenciaupeujc.data.local.dao.EscuelaDao
+import pe.edu.upeu.asistenciaupeujc.data.local.dao.FacultadDao
 import pe.edu.upeu.asistenciaupeujc.data.local.dao.MaterialesxDao
 import pe.edu.upeu.asistenciaupeujc.data.remote.RestActividad
+import pe.edu.upeu.asistenciaupeujc.data.remote.RestEscuela
+import pe.edu.upeu.asistenciaupeujc.data.remote.RestFacultad
 import pe.edu.upeu.asistenciaupeujc.data.remote.RestMaterialesx
 import pe.edu.upeu.asistenciaupeujc.data.remote.RestUsuario
 import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
@@ -81,5 +85,27 @@ class DataSourceModule {
     @Provides
     fun materialesxDao(db:DbDataSource): MaterialesxDao {
         return db.materialesxDao()
+    }
+
+
+    @Singleton
+    @Provides
+    fun restFacultad(retrofit: Retrofit):RestFacultad{
+        return retrofit.create(RestFacultad::class.java)
+    }
+    @Singleton
+    @Provides
+    fun restEscuela(retrofit: Retrofit): RestEscuela {
+        return retrofit.create(RestEscuela::class.java)
+    }
+    @Singleton
+    @Provides
+    fun facultadDao(db:DbDataSource): FacultadDao {
+        return db.facultadDao()
+    }
+    @Singleton
+    @Provides
+    fun escuelaDao(db:DbDataSource): EscuelaDao {
+        return db.escuelaDao()
     }
 }

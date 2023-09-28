@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pe.edu.upeu.asistenciaupeujc.modelo.Facultad
 import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
+import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConFacultad
 import pe.edu.upeu.asistenciaupeujc.repository.FacultadRepository
 import pe.edu.upeu.asistenciaupeujc.repository.EscuelaRepository
 import javax.inject.Inject
@@ -23,8 +23,8 @@ class EscuelaViewModel @Inject constructor(
     private val _isLoading: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
     }
-    val activ: LiveData<List<EscuelaConActividad>> by lazy {
-        escuRepo.reportarEscuelaes()
+    val activ: LiveData<List<EscuelaConFacultad>> by lazy {
+        escuRepo.reportarEscuelas()
     }
     val isLoading: LiveData<Boolean> get() = _isLoading
     fun addEscuela() {
@@ -34,7 +34,7 @@ class EscuelaViewModel @Inject constructor(
             }
     }
 
-    fun deleteEscuela(toDelete: EscuelaConActividad) {
+    fun deleteEscuela(toDelete: EscuelaConFacultad) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("ELIMAR", toDelete.toString())
             escuRepo.deleteEscuela(toDelete);

@@ -26,7 +26,7 @@ import pe.edu.upeu.asistencia.services.FacultadService;
  * @author DELL
  */
 @RestController
-@RequestMapping("/asis/facultad")
+@RequestMapping("/upeu/facultad")
 public class FacultadController {
     @Autowired
     private FacultadService facultadService;    
@@ -52,13 +52,13 @@ public class FacultadController {
     
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Facultad> getFacultadById(@PathVariable Long id) {
-        Facultad facultad = facultadService.geEntidadById(id);
+        Facultad facultad = facultadService.geFacultadById(id);
         return ResponseEntity.ok(facultad);
     }
     
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Map<String, Boolean>> deleteFacultad(@PathVariable Long id) {
-        Facultad facultad = facultadService.geEntidadById(id);
+        Facultad facultad = facultadService.geFacultadById(id);
         return ResponseEntity.ok(facultadService.delete(facultad.getId()));
     }
     

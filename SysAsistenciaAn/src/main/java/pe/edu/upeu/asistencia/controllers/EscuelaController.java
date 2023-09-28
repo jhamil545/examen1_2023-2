@@ -19,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import pe.edu.upeu.asistencia.dtos.EscuelaDto;
+import pe.edu.upeu.asistencia.dtos.MaterialesxDto;
 import pe.edu.upeu.asistencia.models.Escuela;
+import pe.edu.upeu.asistencia.models.Materialesx;
 import pe.edu.upeu.asistencia.services.EscuelaService;
 
 /**
@@ -27,7 +30,7 @@ import pe.edu.upeu.asistencia.services.EscuelaService;
  * @author DELL
  */
 @RestController
-@RequestMapping("/asis/escuela")
+@RequestMapping("/upeu/escuela")
 public class EscuelaController {
     @Autowired
     private EscuelaService escuelaService;    
@@ -44,26 +47,28 @@ public class EscuelaController {
     }
     
     @PostMapping("/crear")
-    public ResponseEntity<Escuela> createEscuela(@RequestBody Escuela escuela) {
+    public ResponseEntity<Escuela> createMaterialesx(@RequestBody EscuelaDto.EscuelaCrearDto escuela) {
+
+        
         Escuela data = escuelaService.save(escuela);
         return ResponseEntity.ok(data);
     }
     
     @GetMapping("/buscar/{id}")
     public ResponseEntity<Escuela> getActividadById(@PathVariable Long id) {
-        Escuela actividad = escuelaService.geEntidadById(id);
+        Escuela actividad = escuelaService.getEscuelaById(id);
         return ResponseEntity.ok(actividad);
     }
     
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Map<String, Boolean>> deleteActividad(@PathVariable Long id) {
-        Escuela actividad = escuelaService.geEntidadById(id);
+        Escuela actividad = escuelaService.getEscuelaById(id);
         return ResponseEntity.ok(escuelaService.delete(actividad.getId()));
     }
     
     @PutMapping("/editar/{id}")
-    public ResponseEntity<Escuela> updateActividad(@PathVariable Long id, @RequestBody Escuela actividadDetails) {        
-        Escuela updatedActividad = escuelaService.update(actividadDetails, id);
-        return ResponseEntity.ok(updatedActividad);
-    }   
-    } 
+    public ResponseEntity<Escuela> updateEscuela(@PathVariable Long id,
+            @RequestBody EscuelaDto.EscuelaCrearDto escuelaDetails) {
+        Escuela updatedEscuela = escuelaService.update(escuelaDetails, id);
+        return ResponseEntity.ok(updatedEscuela); 
+    } }

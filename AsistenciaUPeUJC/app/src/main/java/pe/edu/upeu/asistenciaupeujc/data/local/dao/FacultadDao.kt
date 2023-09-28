@@ -24,7 +24,7 @@ interface FacultadDao {
     suspend fun eliminarFacultad(facultad: Facultad)
 
     @Query("select * from facultad")
-    fun reportatFacultad():LiveData<List<Facultad>>
+    fun reportarFacultad():LiveData<List<Facultad>>
 
     @Query("select * from facultad where id=:idx")
     fun buscarFacultad(idx: Long):LiveData<Facultad>

@@ -6,6 +6,7 @@ package pe.edu.upeu.asistencia.services;
 
 import java.util.List;
 import java.util.Map;
+import pe.edu.upeu.asistencia.dtos.EscuelaDto;
 import pe.edu.upeu.asistencia.models.Escuela;
 
 /**
@@ -13,13 +14,13 @@ import pe.edu.upeu.asistencia.models.Escuela;
  * @author DELL
  */
 public interface EscuelaService {
-    Escuela save(Escuela entidad);
+     Escuela save(EscuelaDto.EscuelaCrearDto escuela);
 
     List<Escuela> findAll();
 
     Map<String, Boolean> delete(Long id);
 
-    Escuela geEntidadById(Long id);
+    Escuela getEscuelaById(Long id);
 
-    Escuela update(Escuela entidad, Long id); 
+    Escuela update(EscuelaDto.EscuelaCrearDto escuela, Long id);
 }

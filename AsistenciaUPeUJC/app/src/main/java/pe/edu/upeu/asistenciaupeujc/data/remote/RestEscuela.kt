@@ -14,22 +14,22 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RestEscuela {
-    @GET("/asis/escuela/list")
+    @GET("/upeu/escuela/list")
     suspend fun reportarEscuela(@Header("Authorization") token:String):Response<List<EscuelaReport>>
 
 
-    @GET("/asis/escuela/buscar/{id}")
+    @GET("/upeu/escuela/buscar/{id}")
     suspend fun getEscuelaId(@Header("Authorization") token:String , @Query("id") id:Long):Response<Escuela>
 
 
-    @DELETE("/asis/escuela/eliminar/{id}")
+    @DELETE("/upeu/escuela/eliminar/{id}")
     suspend fun deleteEscuela(@Header("Authorization") token:String , @Path("id") id:Long):Response<MsgGeneric>
 
 
-    @PUT("/asis/escuela/editar/{id}")
+    @PUT("/upeu/escuela/editar/{id}")
     suspend fun actualizarEscuela(@Header("Authorization") token:String , @Path("id") id:Long , @Body escuela :Escuela):Response<Escuela>
 
-    @POST("/asis/escuela/crear")
+    @POST("/upeu/escuela/crear")
     suspend fun insertarEscuela(@Header("Authorization") token:String , @Body escuela :Escuela):Response<Escuela>
 
 

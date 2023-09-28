@@ -49,7 +49,7 @@ class FacultadRepositoryImp @Inject constructor(
         }catch (e:Exception){
             Log.i("ERROR", "Error: ${e.message}")
         }
-        return facultadDao.reportatFacultad()
+        return facultadDao.reportarFacultad()
     }
 
     override fun buscarFacultadId(id:Long):LiveData<Facultad>{

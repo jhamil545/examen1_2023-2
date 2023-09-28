@@ -10,24 +10,19 @@ data class Escuela(
     var nombreeap: String,
     var estado: String,
     var inicialeseap: String,
-    var id_facultad: String,
+    var facultadId: Long,
+    
 
 
 )
 
-data class EscuelaConActividad(
+data class EscuelaConFacultad(
     var id: Long,
-    var cui: String,
-    var tipoCui: String,
-    var materEntre: String,
-    var fecha: String,
-    var horaReg: String,
-    var latituda: String,
-    var longituda: String,
-    var modFh: String,
-    var offlinex: String,
-    var actividadId: Long,
-    var nombreActividad: String
+    var nombreeap: String,
+    var estado: String,
+    var inicialeseap: String,
+    var facultadId: Long,
+    var nombrefac: String,
 )
 data class EscuelaReport(
 
@@ -35,5 +30,5 @@ data class EscuelaReport(
     var nombreeap: String,
     var estado: String,
     var inicialeseap: String,
-    var id_facultad: String,
+    var facultadId: Facultad,
 )

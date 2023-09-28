@@ -12,7 +12,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import pe.edu.upeu.asistenciaupeujc.modelo.Actividad
 import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
+import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConFacultad
 
 @Dao
 interface EscuelaDao {
@@ -31,8 +31,8 @@ interface EscuelaDao {
     /*@Delete
     suspend fun eliminarEscuela(escuela: Escuela)*/
     @Transaction
-    @Query("select m.*, a.nombreActividad from escuela m, actividad a where m.id_facultad=a.id")
-    fun reportatEscuela():LiveData<List<EscuelaConActividad>>
+    @Query("select m.*, a.nombrefac from escuela m, facultad a where m.facultadId=a.id")
+    fun reportatEscuela():LiveData<List<EscuelaConFacultad>>
 
 
 

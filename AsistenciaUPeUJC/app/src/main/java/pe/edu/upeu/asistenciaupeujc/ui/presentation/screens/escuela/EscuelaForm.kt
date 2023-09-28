@@ -62,7 +62,7 @@ fun EscuelaForm(
     if (text!="0"){
         escuelaD = Gson().fromJson(text, Escuela::class.java)
     }else{
-        escuelaD= Escuela(0,"","", "","")
+        escuelaD= Escuela(0,"","", "",0)
     }
 
     formulario(escuelaD.id!!,
@@ -89,7 +89,7 @@ fun formulario(id:Long,
 ){
 
     Log.i("VERRR", "d: "+escuela?.id!!)
-    val person=Escuela(0,"","", "","")
+    val person=Escuela(0,"","", "",0)
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val isLoading by viewModel.isLoading.observeAsState(false)
@@ -106,34 +106,44 @@ fun formulario(id:Long,
         BuildEasyForms { easyForm ->
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
+                NameTextField(easyForms = easyForm, text =escuela?.nombreeap!!,"Nombre", MyFormKeys.NOMBREEAP )
+                NameTextField(easyForms = easyForm, text =escuela?.inicialeseap!!,"iniciales", MyFormKeys.INICIALESEAP )
+
+
                 var listE = listOf(
                     ComboModel("SI","SI"),
                     ComboModel("NO","NO"),
                 )
-
+                DropdownMenuCustom(easyForm = easyForm, label = "Estado", escuela.estado, list =listE, MyFormKeys.ESTADO )
+                DropdownMenuCustom(easyForm = easyForm, label = "Facultad:", textv ="", viewModel.listE, MyFormKeys.FACULTADID )
 
 
                 Row(Modifier.align(Alignment.CenterHorizontally)){
                     AccionButtonSuccess(easyForms = easyForm, "Guardar", id){
                         val lista=easyForm.formData()
 
-
+                        person.nombreeap=(lista.get(0) as EasyFormsResult.StringResult).value
+                        person.estado=splitCadena((lista.get(1) as EasyFormsResult.GenericStateResult<String>).value)
+                        person.inicialeseap=(lista.get(2) as EasyFormsResult.StringResult).value
                         //person.actividadId = (lista.get(7) as EasyFormsResult.StringResult).value.toLong()
-
+                        person.facultadId=
+                            pe.edu.upeu.asistenciaupeujc.ui.presentation.screens.escuela.splitCadena(
+                                (lista.get(3) as EasyFormsResult.GenericStateResult<String>).value
+                            ).toLong()
 
                         if (id==0.toLong()){
 
-
-                            Log.i("AGREGARID", "OF:"+ person.id_facultad)
+                            Log.i("AGREGAR", "ES:"+ person.estado)
+                            Log.i("AGREGARID", "OF:"+ person.facultadId)
 
                             viewModel.addEscuela(person)
 
-                            navController.navigate(Destinations.MaterialesxUI.route)
+                            navController.navigate(Destinations.EscuelaUI.route)
                         }else{
                             person.id=id
                             Log.i("MODIFICAR", "M:"+person)
                             viewModel.editEscuela(person)
-                            navController.navigate(Destinations.MaterialesxUI.route)
+                            navController.navigate(Destinations.EscuelaUI.route)
                         }
 
                     }

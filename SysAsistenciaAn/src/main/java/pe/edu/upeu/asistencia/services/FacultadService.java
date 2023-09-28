@@ -19,7 +19,7 @@ public interface FacultadService {
 
     Map<String, Boolean> delete(Long id);
 
-    Facultad geEntidadById(Long id);
+    Facultad geFacultadById(Long id);
 
     Facultad update(Facultad entidad, Long id); 
 }

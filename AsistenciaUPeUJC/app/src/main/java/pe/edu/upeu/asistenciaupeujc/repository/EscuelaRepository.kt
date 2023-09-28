@@ -9,14 +9,14 @@ import kotlinx.coroutines.launch
 import pe.edu.upeu.asistenciaupeujc.data.local.dao.EscuelaDao
 import pe.edu.upeu.asistenciaupeujc.data.remote.RestEscuela
 import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
+import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConFacultad
 import pe.edu.upeu.asistenciaupeujc.utils.TokenUtils
 import javax.inject.Inject
 
 interface EscuelaRepository {
 
-    suspend fun deleteEscuela(escuela: EscuelaConActividad)
-    fun reportarEscuelaes(): LiveData<List<EscuelaConActividad>>
+    suspend fun deleteEscuela(escuela: EscuelaConFacultad)
+    fun reportarEscuelas(): LiveData<List<EscuelaConFacultad>>
 
     fun buscarEscuelaId(id:Long): LiveData<Escuela>
 
@@ -29,7 +29,7 @@ class EscuelaRepositoryImp @Inject constructor(
     private val restEscuela: RestEscuela,
     private val escuelaDao: EscuelaDao
 ): EscuelaRepository{
-    override suspend fun deleteEscuela(escuela: EscuelaConActividad){
+    override suspend fun deleteEscuela(escuela: EscuelaConFacultad){
         CoroutineScope(Dispatchers.IO).launch {
             restEscuela.deleteEscuela(TokenUtils.TOKEN_CONTENT,escuela.id)
         }
@@ -37,13 +37,13 @@ class EscuelaRepositoryImp @Inject constructor(
     }
 
 
-    override fun reportarEscuelaes(): LiveData<List<EscuelaConActividad>> {
+    override fun reportarEscuelas(): LiveData<List<EscuelaConFacultad>> {
         try {
             CoroutineScope(Dispatchers.IO).launch{
                 delay(3000)
                 val data=restEscuela.reportarEscuela(TokenUtils.TOKEN_CONTENT).body()!!
                 val dataxx = data.map {
-                    Escuela(it.id, it.nombreeap, it.estado,it.inicialeseap, it.id_facultad)
+                    Escuela(it.id, it.nombreeap, it.estado,it.inicialeseap, it.facultadId.id)
                 }
                 escuelaDao.insertarEscuelas(dataxx)
             }

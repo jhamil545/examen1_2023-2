@@ -60,7 +60,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import pe.edu.upeu.asistenciaupeujc.R
 import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
-import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConActividad
+import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaConFacultad
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.BottomNavigationBar
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.FabItem
 import pe.edu.upeu.asistenciaupeujc.ui.presentation.components.LoadingCard
@@ -96,10 +96,10 @@ val formatoFecha: DateTimeFormatter? = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 @Composable
 fun MyApp(navController: NavHostController,
           onAddClick: (() -> Unit)? = null,
-          onDeleteClick: ((toDelete: EscuelaConActividad) -> Unit)? = null,
-          escuelas: List<EscuelaConActividad>,
+          onDeleteClick: ((toDelete: EscuelaConFacultad) -> Unit)? = null,
+          escuelas: List<EscuelaConFacultad>,
           isLoading: Boolean,
-          onEditClick: ((toPersona: EscuelaConActividad) -> Unit)? = null,
+          onEditClick: ((toPersona: EscuelaConFacultad) -> Unit)? = null,
 ) {
     val context = LocalContext.current
     //val navController = rememberNavController()
@@ -179,7 +179,7 @@ fun MyApp(navController: NavHostController,
                                     //.clip(CircleShape)
                                     .clip(RoundedCornerShape(8.dp)),
                                 painter = rememberImagePainter(
-                                    data = escuela.tipoCui,
+                                    data = escuela.nombreeap,
                                     builder = {
                                         placeholder(R.drawable.bg)
                                         error(R.drawable.bg)
@@ -192,8 +192,8 @@ fun MyApp(navController: NavHostController,
                             Column(
                                 Modifier.weight(1f),
                             ) {
-                                Text(" ${escuela.offlinex}", fontWeight = FontWeight.Bold)
-                                val datex = LocalDate.parse(escuela.fecha!!, DateTimeFormatter.ISO_DATE)
+                                Text(" ${escuela.estado}", fontWeight = FontWeight.Bold)
+                                val datex = LocalDate.parse(escuela.nombrefac!!, DateTimeFormatter.ISO_DATE)
                                 var fecha=formatoFecha?.format(datex)
                                 Text(""+fecha, color =
                                 MaterialTheme.colorScheme.primary)

@@ -95,13 +95,13 @@ fun formulario(id:Long,
     Scaffold(modifier = Modifier.padding(top = 60.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)){
         BuildEasyForms { easyForm ->
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                NameTextField(easyForms = easyForm, text =facultad?.nombrefac!!,"Nomb. Facultad:", MyFormKeys.NAME )
+                NameTextField(easyForms = easyForm, text =facultad?.nombrefac!!,"Nomb. Facultad:", MyFormKeys.NOMBREFAC )
                 var listE = listOf(
                     ComboModel("Activo","Activo"),
                     ComboModel("Desactivo","Desactivo"),
                 )
-                ComboBox(easyForm = easyForm, "Estado:", facultad?.estado!!, listE)
-                NameTextField(easyForms = easyForm, text =facultad?.iniciales!!,"Iniciales:", MyFormKeys.NAME )
+                DropdownMenuCustom(easyForm = easyForm, label = "Estado", facultad.estado, list =listE, MyFormKeys.ESTADO )
+                NameTextField(easyForms = easyForm, text =facultad?.iniciales!!,"Iniciales:", MyFormKeys.INICIALES )
 
 
 
@@ -111,8 +111,17 @@ fun formulario(id:Long,
                         val lista=easyForm.formData()
                         person.nombrefac=(lista.get(0) as EasyFormsResult.StringResult).value
                         person.estado=splitCadena((lista.get(1) as EasyFormsResult.GenericStateResult<String>).value)
-                        person.iniciales=splitCadena((lista.get(2) as EasyFormsResult.GenericStateResult<String>).value)
+                        person.iniciales=(lista.get(2) as EasyFormsResult.StringResult).value
 
+                        if (id==0.toLong()){
+                            Log.i("AGREGAR", "M:"+ person.estado)
+
+                            viewModel.addFacultad(person)
+                        }else{
+                            person.id=id
+                            Log.i("MODIFICAR", "M:"+person)
+                            viewModel.editFacultad(person)
+                        }
 
                         navController.navigate(Destinations.FacultadUI.route)
                     }

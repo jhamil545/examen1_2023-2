@@ -10,18 +10,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import pe.edu.upeu.asistenciaupeujc.modelo.Actividad
+
 import pe.edu.upeu.asistenciaupeujc.modelo.ComboModel
 import pe.edu.upeu.asistenciaupeujc.modelo.Escuela
 import pe.edu.upeu.asistenciaupeujc.modelo.EscuelaReport
-import pe.edu.upeu.asistenciaupeujc.repository.ActividadRepository
+import pe.edu.upeu.asistenciaupeujc.modelo.Facultad
+
 import pe.edu.upeu.asistenciaupeujc.repository.EscuelaRepository
+import pe.edu.upeu.asistenciaupeujc.repository.FacultadRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class EscuelaFormViewModel @Inject constructor(
     private val escuRepo: EscuelaRepository,
-    private val facuRepo: ActividadRepository,
+    private val facuRepo: FacultadRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(){
     private val _isLoading: MutableLiveData<Boolean> by lazy {
@@ -33,7 +35,7 @@ class EscuelaFormViewModel @Inject constructor(
     }
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    val activ: LiveData<List<Actividad>> by lazy { facuRepo.reportarActividades()}
+    val activ: LiveData<List<Facultad>> by lazy { facuRepo.reportarFacultades()}
     var listE = mutableListOf<ComboModel>(ComboModel(0.toString(), "Seleccione"))
 
     init {
@@ -41,7 +43,7 @@ class EscuelaFormViewModel @Inject constructor(
             _isLoading.postValue(true)
             delay(1500)
             activ.value?.forEach {
-                listE.add(ComboModel(code = it.id.toString(), name = it.nombreActividad))
+                listE.add(ComboModel(code = it.id.toString(), name = it.nombrefac))
             }
             //listE.removeAt(0)
             _isLoading.postValue(false)
